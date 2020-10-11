@@ -1,5 +1,5 @@
---- configure.orig  2020-10-11 19:12:16.759760904 +0200
-+++ configure   2020-10-11 19:15:49.059533563 +0200
+--- configure  2020-10-11 19:12:16.759760904 +0200
++++ configure.patch   2020-10-11 19:15:49.059533563 +0200
 @@ -6361,7 +6361,7 @@
  enabled librsvg           && require_pkg_config librsvg librsvg-2.0 librsvg-2.0/librsvg/rsvg.h rsvg_handle_render_cairo
  enabled librtmp           && require_pkg_config librtmp librtmp librtmp/rtmp.h RTMP_Socket
