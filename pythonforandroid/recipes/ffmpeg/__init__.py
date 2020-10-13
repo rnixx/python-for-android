@@ -71,7 +71,7 @@ class FFMpegRecipe(Recipe):
                 ]
             else:
                 # disable libpostproc
-                flags += ['--disable-postproc']
+                #flags += ['--disable-postproc']
 
                 # Enable codecs only for .mp4:
                 flags += [
@@ -104,6 +104,8 @@ class FFMpegRecipe(Recipe):
                 '--disable-debug',
                 '--enable-shared',
             ]
+
+            flags += ['--disable-postproc']
 
             if 'arm64' in arch.arch:
                 cross_prefix = 'aarch64-linux-android-'
