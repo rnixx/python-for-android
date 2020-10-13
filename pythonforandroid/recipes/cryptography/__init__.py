@@ -3,7 +3,7 @@ from pythonforandroid.recipe import CompiledComponentsPythonRecipe, Recipe
 
 class CryptographyRecipe(CompiledComponentsPythonRecipe):
     name = 'cryptography'
-    version = '2.8'
+    version = '3.1.1'
     url = 'https://github.com/pyca/cryptography/archive/{version}.tar.gz'
     depends = ['openssl', 'six', 'setuptools', 'cffi']
     call_hostpython_via_targetpython = False
