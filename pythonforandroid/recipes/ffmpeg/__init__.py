@@ -31,17 +31,17 @@ class FFMpegRecipe(Recipe):
             cflags = []
             ldflags = []
 
-            if 'openssl' in self.ctx.recipe_build_order:
-                flags += [
-                    '--enable-openssl',
-                    '--enable-nonfree',
-                    '--enable-protocol=https,tls_openssl',
-                ]
-                build_dir = Recipe.get_recipe(
-                    'openssl', self.ctx).get_build_dir(arch.arch)
-                cflags += ['-I' + build_dir + '/include/',
-                           '-DOPENSSL_API_COMPAT=0x10002000L']
-                ldflags += ['-L' + build_dir]
+            # if 'openssl' in self.ctx.recipe_build_order:
+            #     flags += [
+            #         '--enable-openssl',
+            #         '--enable-nonfree',
+            #         '--enable-protocol=https,tls_openssl',
+            #     ]
+            #     build_dir = Recipe.get_recipe(
+            #         'openssl', self.ctx).get_build_dir(arch.arch)
+            #     cflags += ['-I' + build_dir + '/include/',
+            #                '-DOPENSSL_API_COMPAT=0x10002000L']
+            #     ldflags += ['-L' + build_dir]
 
             if 'ffpyplayer_codecs' in self.ctx.recipe_build_order:
                 # enable GPL
