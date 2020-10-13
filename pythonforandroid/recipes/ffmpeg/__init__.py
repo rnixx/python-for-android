@@ -99,7 +99,7 @@ class FFMpegRecipe(Recipe):
                 '--enable-protocol=file,http,hls',
                 '--enable-small',
                 '--enable-hwaccels',
-                '--enable-pic',
+                # '--enable-pic',
                 '--disable-static',
                 '--disable-debug',
                 '--enable-shared',
