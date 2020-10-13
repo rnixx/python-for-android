@@ -44,6 +44,9 @@ class FFMpegRecipe(Recipe):
                 ldflags += ['-L' + build_dir]
 
             if 'ffpyplayer_codecs' in self.ctx.recipe_build_order:
+                # enable GPL
+                flags += ['--enable-gpl']
+
                 # libx264
                 flags += ['--enable-libx264']
                 build_dir = Recipe.get_recipe(
@@ -67,6 +70,9 @@ class FFMpegRecipe(Recipe):
                     '--enable-demuxers',
                 ]
             else:
+                # disable libpostproc
+                flags += ['--disable-postproc']
+
                 # Enable codecs only for .mp4:
                 flags += [
                     '--enable-parser=aac,ac3,h261,h264,mpegaudio,mpeg4video,mpegvideo,vc1',
@@ -93,7 +99,6 @@ class FFMpegRecipe(Recipe):
                 '--enable-protocol=file,http,hls',
                 '--enable-small',
                 '--enable-hwaccels',
-                # '--enable-gpl',
                 '--enable-pic',
                 '--disable-static',
                 '--disable-debug',
