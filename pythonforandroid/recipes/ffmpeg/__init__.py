@@ -71,7 +71,7 @@ class FFMpegRecipe(Recipe):
                 ]
             else:
                 # Disable libpostproc
-                flags += ['--disable-postproc']
+                # flags += ['--disable-postproc']
 
                 # Enable codecs only for .mp4:
                 flags += [

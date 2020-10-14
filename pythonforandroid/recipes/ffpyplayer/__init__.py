@@ -4,7 +4,7 @@ from os.path import join
 
 
 class FFPyPlayerRecipe(CythonRecipe):
-    version = 'f612407b37606854cf466fbc0a7cc8a5fe7f3ea7'
+    version = '8a080c0fe55c985eadeb6d5cf10b97a2c0bacc47'
     url = 'https://github.com/rnixx/ffpyplayer/archive/{version}.zip'
     # version = 'v4.3.1'
     # url = 'https://github.com/matham/ffpyplayer/archive/{version}.zip'
@@ -25,10 +25,6 @@ class FFPyPlayerRecipe(CythonRecipe):
 
         env["USE_SDL2_MIXER"] = '1'
         env["SDL2_MIXER_INCLUDE_DIR"] = join(self.ctx.bootstrap.build_dir, 'jni', 'SDL2_mixer')
-
-        print(80 * '#')
-        print(env['LDFLAGS'])
-        print(80 * '#')
 
         return env
 
