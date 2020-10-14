@@ -70,9 +70,6 @@ class FFMpegRecipe(Recipe):
                     '--enable-demuxers',
                 ]
             else:
-                # Disable libpostproc
-                # flags += ['--disable-postproc']
-
                 # Enable codecs only for .mp4:
                 flags += [
                     '--enable-parser=aac,ac3,h261,h264,mpegaudio,mpeg4video,mpegvideo,vc1',
