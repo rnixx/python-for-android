@@ -22,6 +22,8 @@ class FFPyPlayerRecipe(CythonRecipe):
         env["USE_SDL2_MIXER"] = '1'
         env["SDL2_MIXER_INCLUDE_DIR"] = join(self.ctx.bootstrap.build_dir, 'jni', 'SDL2_mixer')
 
+        env['CFLAGS'] += ' -UCONFIG_POSTPROC'
+
         return env
 
 
