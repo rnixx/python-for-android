@@ -4,10 +4,10 @@ from os.path import join
 
 
 class FFPyPlayerRecipe(CythonRecipe):
-    # version = '0a7f7fdf324d7696292bf0d5fc56958abdd2373d'
-    # url = 'https://github.com/rnixx/ffpyplayer/archive/{version}.zip'
-    version = 'v4.3.1'
-    url = 'https://github.com/matham/ffpyplayer/archive/{version}.zip'
+    version = '5663664d79ba7d7113f41d93de011cdccfee1cce'
+    url = 'https://github.com/rnixx/ffpyplayer/archive/{version}.zip'
+    # version = 'v4.3.1'
+    # url = 'https://github.com/matham/ffpyplayer/archive/{version}.zip'
     depends = ['python3', 'sdl2', 'ffmpeg']
     opt_depends = ['openssl', 'ffpyplayer_codecs']
 
