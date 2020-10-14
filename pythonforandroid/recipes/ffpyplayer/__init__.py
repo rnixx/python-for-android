@@ -4,7 +4,7 @@ from os.path import join
 
 
 class FFPyPlayerRecipe(CythonRecipe):
-    version = '5663664d79ba7d7113f41d93de011cdccfee1cce'
+    version = 'f612407b37606854cf466fbc0a7cc8a5fe7f3ea7'
     url = 'https://github.com/rnixx/ffpyplayer/archive/{version}.zip'
     # version = 'v4.3.1'
     # url = 'https://github.com/matham/ffpyplayer/archive/{version}.zip'
