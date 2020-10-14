@@ -6,6 +6,8 @@ from os.path import join
 class FFPyPlayerRecipe(CythonRecipe):
     version = '0a7f7fdf324d7696292bf0d5fc56958abdd2373d'
     url = 'https://github.com/rnixx/ffpyplayer/archive/{version}.zip'
+    # version = 'v4.3.1'
+    # url = 'https://github.com/matham/ffpyplayer/archive/{version}.zip'
     depends = ['python3', 'sdl2', 'ffmpeg']
     opt_depends = ['openssl', 'ffpyplayer_codecs']
 
@@ -15,6 +17,8 @@ class FFPyPlayerRecipe(CythonRecipe):
         build_dir = Recipe.get_recipe('ffmpeg', self.ctx).get_build_dir(arch.arch)
         env["FFMPEG_INCLUDE_DIR"] = join(build_dir, "include")
         env["FFMPEG_LIB_DIR"] = join(build_dir, "lib")
+        env["FFMPEG_DISABLE_GPL"] = '1'
+        # env["CONFIG_POSTPROC"] = '0'
 
         env["SDL_INCLUDE_DIR"] = join(self.ctx.bootstrap.build_dir, 'jni', 'SDL', 'include')
         env["SDL_LIB_DIR"] = join(self.ctx.bootstrap.build_dir, 'libs', arch.arch)
