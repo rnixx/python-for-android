@@ -106,7 +106,7 @@ class FFMpegRecipe(Recipe):
                 cross_prefix = 'aarch64-linux-android-'
                 arch_flag = 'aarch64'
             elif 'x86' in arch.arch:
-                cross_prefix = 'x86-linux-android-'
+                cross_prefix = 'i686-linux-android-'
                 arch_flag = 'x86'
             else:
                 cross_prefix = 'arm-linux-androideabi-'
