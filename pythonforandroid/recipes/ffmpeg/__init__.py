@@ -108,7 +108,8 @@ class FFMpegRecipe(Recipe):
             elif 'x86' in arch.arch:
                 cross_prefix = 'i686-linux-android-'
                 arch_flag = 'x86'
-                flags += ['--extra-cflags=-fno-integrated-as']
+                # flags += ['--extra-cflags=-fno-integrated-as']
+                flags += ['--disable-asm']
             else:
                 cross_prefix = 'arm-linux-androideabi-'
                 arch_flag = 'arm'
