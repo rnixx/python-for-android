@@ -4,8 +4,8 @@ from os.path import join
 
 
 class FFPyPlayerRecipe(CythonRecipe):
-    version = 'v4.3.1'
-    url = 'https://github.com/matham/ffpyplayer/archive/{version}.zip'
+    version = '0a7f7fdf324d7696292bf0d5fc56958abdd2373d'
+    url = 'https://github.com/rnixx/ffpyplayer/archive/{version}.zip'
     depends = ['python3', 'sdl2', 'ffmpeg']
     opt_depends = ['openssl', 'ffpyplayer_codecs']
 
@@ -21,8 +21,6 @@ class FFPyPlayerRecipe(CythonRecipe):
 
         env["USE_SDL2_MIXER"] = '1'
         env["SDL2_MIXER_INCLUDE_DIR"] = join(self.ctx.bootstrap.build_dir, 'jni', 'SDL2_mixer')
-
-        env['CFLAGS'] += ' -UCONFIG_POSTPROC'
 
         return env
 
