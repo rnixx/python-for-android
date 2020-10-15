@@ -4,12 +4,8 @@ from os.path import join
 
 
 class FFPyPlayerRecipe(CythonRecipe):
-    # version = 'v4.3.2'
-    # url = 'https://github.com/matham/ffpyplayer/archive/{version}.zip'
-    # XXX: change as soon as ffpyplayer v4.3.2 released
-    version = 'ab229984a0dc2d5460af2ef4b34744b71c607bc9'
-    url = 'https://github.com/rnixx/ffpyplayer/archive/{version}.zip'
-
+    version = 'v4.3.2'
+    url = 'https://github.com/matham/ffpyplayer/archive/{version}.zip'
     depends = ['python3', 'sdl2', 'ffmpeg']
     opt_depends = ['openssl', 'ffpyplayer_codecs']
 
