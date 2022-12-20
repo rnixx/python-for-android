@@ -12,6 +12,7 @@ class CryptographyRecipe(CompiledComponentsPythonRecipe):
         env = super().get_recipe_env(arch)
 
         env['CRYPTOGRAPHY_DONT_BUILD_RUST'] = '1'
+        env['CRYPTOGRAPHY_SUPPRESS_LINK_FLAGS'] = '1'
 
         openssl_recipe = Recipe.get_recipe('openssl', self.ctx)
         env['CFLAGS'] += openssl_recipe.include_flags(arch)
