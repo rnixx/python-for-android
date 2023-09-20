@@ -206,7 +206,7 @@ int main(int argc, char *argv[]) {
   /* inject our bootstrap code to redirect python stdin/stdout
    * replace sys.path with our path
    */
-  PyRun_SimpleString("import sys, posix\n");
+  PyRun_SimpleString("import io, sys, posix\n");
 
   char add_site_packages_dir[256];
 
@@ -224,17 +224,19 @@ int main(int argc, char *argv[]) {
   }
 
   PyRun_SimpleString(
-      "class LogFile(object):\n"
+      "class LogFile(io.IOBase):\n"
       "    def __init__(self):\n"
       "        self.__buffer = ''\n"
+      "    def readable(self):\n"
+      "        return False\n"
+      "    def writable(self):\n"
+      "        return True\n"
       "    def write(self, s):\n"
       "        s = self.__buffer + s\n"
       "        lines = s.split('\\n')\n"
       "        for l in lines[:-1]:\n"
       "            androidembed.log(l.replace('\\x00', ''))\n"
       "        self.__buffer = lines[-1]\n"
-      "    def flush(self):\n"
-      "        return\n"
       "sys.stdout = sys.stderr = LogFile()\n"
       "print('Android path', sys.path)\n"
       "import os\n"
@@ -251,14 +253,10 @@ int main(int argc, char *argv[]) {
    */
   LOGP("Run user program, change dir and execute entrypoint");
 
-  /* Get the entrypoint, search the .pyo then .py
+  /* Get the entrypoint, search the .pyc then .py
    */
   char *dot = strrchr(env_entrypoint, '.');
-#if PY_MAJOR_VERSION > 2
   char *ext = ".pyc";
-#else
-  char *ext = ".pyo";
-#endif
   if (dot <= 0) {
     LOGP("Invalid entrypoint, abort.");
     return -1;
@@ -281,14 +279,10 @@ int main(int argc, char *argv[]) {
       strcpy(entrypoint, env_entrypoint);
     }
   } else if (!strcmp(dot, ".py")) {
-    /* if .py is passed, check the pyo version first */
+    /* if .py is passed, check the pyc version first */
     strcpy(entrypoint, env_entrypoint);
     entrypoint[strlen(env_entrypoint) + 1] = '\0';
-#if PY_MAJOR_VERSION > 2
     entrypoint[strlen(env_entrypoint)] = 'c';
-#else
-    entrypoint[strlen(env_entrypoint)] = 'o';
-#endif
     if (!file_exists(entrypoint)) {
       /* fallback on pure python version */
       if (!file_exists(env_entrypoint)) {

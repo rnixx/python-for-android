@@ -1,5 +1,201 @@
 # Changelog
 
+## [v2023.09.16](https://github.com/kivy/python-for-android/tree/v2023.09.16)
+
+[Full Changelog](https://github.com/kivy/python-for-android/compare/v2023.05.21...v2023.09.16)
+
+**Closed issues:**
+
+- Microphone And Audio permissions doesn't work [\#2889](https://github.com/kivy/python-for-android/issues/2889)
+- Error with Scipy  [\#2883](https://github.com/kivy/python-for-android/issues/2883)
+- Download failed \( Downloading sqlite3 from https://www.sqlite.org/2021/sqlite-amalgamation-3350500.zip \) during buildozer -v andriod debug [\#2881](https://github.com/kivy/python-for-android/issues/2881)
+- ONNXruntime lib open failed due to 64-bit [\#2880](https://github.com/kivy/python-for-android/issues/2880)
+- Question: how to write a recipe to download and install\(coz build fail\) a wheel package directly? [\#2878](https://github.com/kivy/python-for-android/issues/2878)
+- Impossible to install python for android [\#2867](https://github.com/kivy/python-for-android/issues/2867)
+- scipy with kivy [\#2861](https://github.com/kivy/python-for-android/issues/2861)
+- False positve parser warning. [\#2856](https://github.com/kivy/python-for-android/issues/2856)
+- After successfully building app, its crashes with this error, using firebase-admin [\#2854](https://github.com/kivy/python-for-android/issues/2854)
+- Kivy [\#2837](https://github.com/kivy/python-for-android/issues/2837)
+- not installing on windows 10 [\#2836](https://github.com/kivy/python-for-android/issues/2836)
+- Could not find com.android.tools.build:gradle:7.2.0. in android studio [\#2834](https://github.com/kivy/python-for-android/issues/2834)
+- vlc recipe build fail [\#2822](https://github.com/kivy/python-for-android/issues/2822)
+- mysqldb recipe build fail [\#2813](https://github.com/kivy/python-for-android/issues/2813)
+- babel recipe build fail [\#2803](https://github.com/kivy/python-for-android/issues/2803)
+- Python 3.10 cffi build fails [\#2799](https://github.com/kivy/python-for-android/issues/2799)
+- \[Recipe request\] OpenColorIO & rawpy \(libraw\) [\#2789](https://github.com/kivy/python-for-android/issues/2789)
+- Longer app load time, bigger apk size and unnecessary logs [\#2704](https://github.com/kivy/python-for-android/issues/2704)
+- -fp-model argument not found, directory strict not found [\#2329](https://github.com/kivy/python-for-android/issues/2329)
+- Kivy crashes on Android:  ImportError: dlopen failed: library "libpython3.7m.so" not found [\#2237](https://github.com/kivy/python-for-android/issues/2237)
+- pyconfig.h issue [\#2074](https://github.com/kivy/python-for-android/issues/2074)
+
+**Merged pull requests:**
+
+- Use Python's touch\(\) rather than shelling out. [\#2886](https://github.com/kivy/python-for-android/pull/2886) ([Julian-O](https://github.com/Julian-O))
+- Standardise on move [\#2884](https://github.com/kivy/python-for-android/pull/2884) ([Julian-O](https://github.com/Julian-O))
+- Remove deprecated FlatDir in Gradle template [\#2876](https://github.com/kivy/python-for-android/pull/2876) ([Julian-O](https://github.com/Julian-O))
+- :rotating\_light: linter fixes [\#2874](https://github.com/kivy/python-for-android/pull/2874) ([AndreMiras](https://github.com/AndreMiras))
+- Standardise ensure\_dir and rmdir [\#2871](https://github.com/kivy/python-for-android/pull/2871) ([Julian-O](https://github.com/Julian-O))
+- Correct check for --sdk option [\#2870](https://github.com/kivy/python-for-android/pull/2870) ([Julian-O](https://github.com/Julian-O))
+- Python versions: Update documentation & CI testing [\#2869](https://github.com/kivy/python-for-android/pull/2869) ([Julian-O](https://github.com/Julian-O))
+- Patching cleanup [\#2868](https://github.com/kivy/python-for-android/pull/2868) ([Julian-O](https://github.com/Julian-O))
+- Factor out dependency checking. Use modern version handling [\#2866](https://github.com/kivy/python-for-android/pull/2866) ([Julian-O](https://github.com/Julian-O))
+- `build_platform` should be all-lowercase [\#2864](https://github.com/kivy/python-for-android/pull/2864) ([misl6](https://github.com/misl6))
+- Fix simple typos in comments [\#2863](https://github.com/kivy/python-for-android/pull/2863) ([Julian-O](https://github.com/Julian-O))
+- Use a pinned version of `Cython` for now, as most of the recipes are incompatible with `Cython==3.x.x` [\#2862](https://github.com/kivy/python-for-android/pull/2862) ([misl6](https://github.com/misl6))
+- Docs: Fix typos and updated command to build apk - README [\#2860](https://github.com/kivy/python-for-android/pull/2860) ([kulothunganug](https://github.com/kulothunganug))
+- Docs: Fix code string - quickstart.rst [\#2859](https://github.com/kivy/python-for-android/pull/2859) ([kulothunganug](https://github.com/kulothunganug))
+- Automatically generate required pre-requisites [\#2858](https://github.com/kivy/python-for-android/pull/2858) ([Julian-O](https://github.com/Julian-O))
+- Use platform.uname instead of os.uname [\#2857](https://github.com/kivy/python-for-android/pull/2857) ([Julian-O](https://github.com/Julian-O))
+- Bump `kivy` version to `2.2.1` [\#2855](https://github.com/kivy/python-for-android/pull/2855) ([misl6](https://github.com/misl6))
+- Correct sys\_platform [\#2852](https://github.com/kivy/python-for-android/pull/2852) ([Julian-O](https://github.com/Julian-O))
+- Changed the url to use https as http fails [\#2846](https://github.com/kivy/python-for-android/pull/2846) ([kuzeyron](https://github.com/kuzeyron))
+- vlc: fix build [\#2841](https://github.com/kivy/python-for-android/pull/2841) ([T-Dynamos](https://github.com/T-Dynamos))
+- Optimize CI runs, by avoiding unnecessary rebuilds [\#2833](https://github.com/kivy/python-for-android/pull/2833) ([misl6](https://github.com/misl6))
+- Remove `pytz` recipe, as it's not needed anymore [\#2830](https://github.com/kivy/python-for-android/pull/2830) ([misl6](https://github.com/misl6))
+- Remove `dateutil` recipe, as it's not needed anymore [\#2829](https://github.com/kivy/python-for-android/pull/2829) ([misl6](https://github.com/misl6))
+- Removes `mysqldb` recipe as does not support Python 3 [\#2828](https://github.com/kivy/python-for-android/pull/2828) ([misl6](https://github.com/misl6))
+- Bump `actions/setup-python` and `actions/checkout` versions, as old ones are deprecated [\#2827](https://github.com/kivy/python-for-android/pull/2827) ([misl6](https://github.com/misl6))
+- Removes `Babel` recipe as it's not needed anymore. [\#2826](https://github.com/kivy/python-for-android/pull/2826) ([misl6](https://github.com/misl6))
+- Cffi update [\#2800](https://github.com/kivy/python-for-android/pull/2800) ([HyTurtle](https://github.com/HyTurtle))
+- Merge master into develop [\#2797](https://github.com/kivy/python-for-android/pull/2797) ([misl6](https://github.com/misl6))
+- Use build rather than pep517 for building [\#2784](https://github.com/kivy/python-for-android/pull/2784) ([s-t-e-v-e-n-k](https://github.com/s-t-e-v-e-n-k))
+
+## [v2023.05.21](https://github.com/kivy/python-for-android/tree/v2023.05.21)
+
+[Full Changelog](https://github.com/kivy/python-for-android/compare/v2023.02.10...v2023.05.21)
+
+**Closed issues:**
+
+- python [\#2795](https://github.com/kivy/python-for-android/issues/2795)
+- Create APK from PyQt app [\#2794](https://github.com/kivy/python-for-android/issues/2794)
+- psutil/\_psutil\_linux.so" is 64-bit instead of 32-bit [\#2785](https://github.com/kivy/python-for-android/issues/2785)
+- pythonforandroid.toolchain.py: error: unrecognized arguments: --dir [\#2775](https://github.com/kivy/python-for-android/issues/2775)
+- App [\#2774](https://github.com/kivy/python-for-android/issues/2774)
+- org.kivy.android.PythonActivity$NewIntentListener is not visible from class loader java.lang.IllegalArgumentException [\#2770](https://github.com/kivy/python-for-android/issues/2770)
+- Service don t start anymore, as smallIconName extra is now mandatory [\#2768](https://github.com/kivy/python-for-android/issues/2768)
+- Start a background sticky service that auto-restart. [\#2767](https://github.com/kivy/python-for-android/issues/2767)
+- Fail installation [\#2764](https://github.com/kivy/python-for-android/issues/2764)
+- Python exception when using colorlog due to incomplete IO implementation in sys.stderr [\#2762](https://github.com/kivy/python-for-android/issues/2762)
+- AttributeError: 'org.kivy.android.PythonService' object has no attribute 'getComponentName' [\#2760](https://github.com/kivy/python-for-android/issues/2760)
+- https://code.videolan.org not available [\#2758](https://github.com/kivy/python-for-android/issues/2758)
+- Cannot install Python-for-Android [\#2754](https://github.com/kivy/python-for-android/issues/2754)
+- c/\_cffi\_backend.c:407:23: error: expression is not assignable [\#2753](https://github.com/kivy/python-for-android/issues/2753)
+- not install [\#2749](https://github.com/kivy/python-for-android/issues/2749)
+- APK crashes upon launch. logcat error: null pointer dereference \(occurs with imported modules\) [\#2358](https://github.com/kivy/python-for-android/issues/2358)
+- Error occured while building the aplication using buildozer [\#2104](https://github.com/kivy/python-for-android/issues/2104)
+- "Could Not Extract Public Data"  Needs very explicit instructions or feedback to the user [\#260](https://github.com/kivy/python-for-android/issues/260)
+
+**Merged pull requests:**
+
+- Update Kivy recipe for 2.2.0 [\#2793](https://github.com/kivy/python-for-android/pull/2793) ([misl6](https://github.com/misl6))
+- Update `pyjnius` version to `1.5.0` [\#2791](https://github.com/kivy/python-for-android/pull/2791) ([misl6](https://github.com/misl6))
+- fix tools/liblink: syntax error [\#2771](https://github.com/kivy/python-for-android/pull/2771) ([SomberNight](https://github.com/SomberNight))
+- fix \#2768 smallIconName null can t be compared to String [\#2769](https://github.com/kivy/python-for-android/pull/2769) ([brvier](https://github.com/brvier))
+- android\_api to integer [\#2765](https://github.com/kivy/python-for-android/pull/2765) ([kuzeyron](https://github.com/kuzeyron))
+- Use io.IOBase for LogFile [\#2763](https://github.com/kivy/python-for-android/pull/2763) ([dylanmccall](https://github.com/dylanmccall))
+- Home app functionality [\#2761](https://github.com/kivy/python-for-android/pull/2761) ([kuzeyron](https://github.com/kuzeyron))
+- Add debug loggings for identifying a matching dist [\#2751](https://github.com/kivy/python-for-android/pull/2751) ([BitcoinWukong](https://github.com/BitcoinWukong))
+- Add PyAV recipe [\#2750](https://github.com/kivy/python-for-android/pull/2750) ([DexerBR](https://github.com/DexerBR))
+- Merge master into develop [\#2748](https://github.com/kivy/python-for-android/pull/2748) ([misl6](https://github.com/misl6))
+- Add support for Python 3.10 and make it the default while building hostpython3 and python3 [\#2577](https://github.com/kivy/python-for-android/pull/2577) ([misl6](https://github.com/misl6))
+
+
+## [v2023.02.10](https://github.com/kivy/python-for-android/tree/v2023.02.10) (2023-02-10)
+
+[Full Changelog](https://github.com/kivy/python-for-android/compare/v2023.01.28...v2023.02.10)
+
+**Closed issues:**
+
+- AttributeError: 'str' object has no attribute 'stdout' [\#2745](https://github.com/kivy/python-for-android/issues/2745)
+- Android app crash on starting up by accessing texture. Error:No module named 'typing\_extensions' [\#2743](https://github.com/kivy/python-for-android/issues/2743)
+
+**Merged pull requests:**
+
+- restrict sh version [\#2746](https://github.com/kivy/python-for-android/pull/2746) ([HyTurtle](https://github.com/HyTurtle))
+- 🐛 fix: Update `pydantic` recipe [\#2742](https://github.com/kivy/python-for-android/pull/2742) ([FilipeMarch](https://github.com/FilipeMarch))
+- Merge master into develop [\#2741](https://github.com/kivy/python-for-android/pull/2741) ([misl6](https://github.com/misl6))
+
+## [v2023.01.28](https://github.com/kivy/python-for-android/tree/v2023.01.28) (2023-01-28)
+
+[Full Changelog](https://github.com/kivy/python-for-android/compare/v2022.12.20...v2023.01.28)
+
+**Closed issues:**
+
+- Python
+ [\#2737](https://github.com/kivy/python-for-android/issues/2737)
+- AndroidX Issue [\#2736](https://github.com/kivy/python-for-android/issues/2736)
+- Kivy build failed [\#2735](https://github.com/kivy/python-for-android/issues/2735)
+- Can't build apk using READ\_EXTERNAL\_STORAGE, WRITE\_EXTERNAL\_STORAGE in buildozer.spec [\#2732](https://github.com/kivy/python-for-android/issues/2732)
+- BUILD FAILURE: No main.py\(o\) found in your app directory. [\#2731](https://github.com/kivy/python-for-android/issues/2731)
+- Your app currently targets API level 30 and must target at least API level 31 to ensure that it is built on the latest APIs optimised for security and performance. Change your app's target API level to at least 31 [\#2729](https://github.com/kivy/python-for-android/issues/2729)
+- Your app currently targets API level 30 and must target at least API level 31 to ensure that it is built on the latest APIs optimised for security and performance. Change your app's target API level to at least 31 [\#2727](https://github.com/kivy/python-for-android/issues/2727)
+- `sh.CommandNotFound: ./download.sh` [\#2726](https://github.com/kivy/python-for-android/issues/2726)
+- Setting `android:screenOrientation` via `--orientation` has no effect when targeting API 31 [\#2724](https://github.com/kivy/python-for-android/issues/2724)
+- \[Question\]: How to set 'compileSdkVersion' to 31 or higher. [\#2722](https://github.com/kivy/python-for-android/issues/2722)
+- Bug in the keyboard event listener [\#2423](https://github.com/kivy/python-for-android/issues/2423)
+
+**Merged pull requests:**
+
+- Implements `--manifest-orientation` and changes how `--orientation` works so we can now pass the setting to the SDL orientation hint [\#2739](https://github.com/kivy/python-for-android/pull/2739) ([misl6](https://github.com/misl6))
+- Update \_\_init\_\_.py from `scrypt` recipe [\#2738](https://github.com/kivy/python-for-android/pull/2738) ([FilipeMarch](https://github.com/FilipeMarch))
+- Apply a patch from SDL upstream that fixes orientation settings [\#2730](https://github.com/kivy/python-for-android/pull/2730) ([misl6](https://github.com/misl6))
+- Support permission properties \(`maxSdkVersion` and `usesPermissionFlags`\) + remove `WRITE_EXTERNAL_STORAGE` permission, which has been previously declared by default [\#2725](https://github.com/kivy/python-for-android/pull/2725) ([misl6](https://github.com/misl6))
+- Merge master in develop [\#2721](https://github.com/kivy/python-for-android/pull/2721) ([misl6](https://github.com/misl6))
+
+## [v2022.12.20](https://github.com/kivy/python-for-android/tree/v2022.12.20) (2022-12-20)
+
+[Full Changelog](https://github.com/kivy/python-for-android/compare/v2022.09.04...v2022.12.20)
+
+**Fixed bugs:**
+
+- `liblzma` fails to build on macOS \(sh.ErrorReturnCode\_2. when running buildozer android debug\) [\#2343](https://github.com/kivy/python-for-android/issues/2343)
+
+**Closed issues:**
+
+- SDL\_ttf 2.0.15 download missing \(deprecated\) related to \#2698 [\#2710](https://github.com/kivy/python-for-android/issues/2710)
+- Update kivy app that's already published on google play store. [\#2709](https://github.com/kivy/python-for-android/issues/2709)
+- Installing deepspeech [\#2702](https://github.com/kivy/python-for-android/issues/2702)
+- ImportError: dlopen failed: library "libc++\_shared.so" not found [\#2699](https://github.com/kivy/python-for-android/issues/2699)
+- ffpyplayer recipe broken after SDL2 upgrade [\#2698](https://github.com/kivy/python-for-android/issues/2698)
+- ModuleNotFoundError: No module named 'android' [\#2697](https://github.com/kivy/python-for-android/issues/2697)
+- Error When I set android.api = 31 [\#2696](https://github.com/kivy/python-for-android/issues/2696)
+- Is threre any way to protect .py code  [\#2695](https://github.com/kivy/python-for-android/issues/2695)
+- args.service\_class\_name results in link error  [\#2679](https://github.com/kivy/python-for-android/issues/2679)
+- Remove `x86_64` suffix from ndk download link [\#2676](https://github.com/kivy/python-for-android/issues/2676)
+- Pillow 9.2.0 recipe? [\#2671](https://github.com/kivy/python-for-android/issues/2671)
+- `ffmpeg`: unable to find library -lvpx [\#2665](https://github.com/kivy/python-for-android/issues/2665)
+- Buildozer fails while build numpy recipie 'UnixCCompiler' object has no attribute 'cxx\_compiler' [\#2664](https://github.com/kivy/python-for-android/issues/2664)
+- \[PEP 517\] Relax installation-time "pep517\<0.7.0" requirement [\#2573](https://github.com/kivy/python-for-android/issues/2573)
+- Add support for custom resources [\#2298](https://github.com/kivy/python-for-android/issues/2298)
+- Auto-correct / word suggestion does not work with Swiftkey/Samsung keyboard [\#2010](https://github.com/kivy/python-for-android/issues/2010)
+
+**Merged pull requests:**
+
+- `InputType.TYPE_TEXT_FLAG_MULTI_LINE` forces `InputType.TYPE_TEXT` even if `SDLActivity.keyboardInputType` is `NULL` [\#2716](https://github.com/kivy/python-for-android/pull/2716) ([misl6](https://github.com/misl6))
+- secp256k1 Update "--host=" [\#2714](https://github.com/kivy/python-for-android/pull/2714) ([RobertFlatt](https://github.com/RobertFlatt))
+- Delete pythonforandroid/recipes/cdecimal directory [\#2713](https://github.com/kivy/python-for-android/pull/2713) ([RobertFlatt](https://github.com/RobertFlatt))
+- Bump `sdl2` version to `2.26.1` [\#2712](https://github.com/kivy/python-for-android/pull/2712) ([misl6](https://github.com/misl6))
+- Flake8 does not support inline comments for any of the keys. [\#2708](https://github.com/kivy/python-for-android/pull/2708) ([misl6](https://github.com/misl6))
+- Gradle: Run the clean task before anything else to make sure nothing is cached. [\#2705](https://github.com/kivy/python-for-android/pull/2705) ([misl6](https://github.com/misl6))
+- Custom Service notification [\#2703](https://github.com/kivy/python-for-android/pull/2703) ([RobertFlatt](https://github.com/RobertFlatt))
+- Include paths for sdl2\_mixer have changed. Added a method to return the right one. [\#2700](https://github.com/kivy/python-for-android/pull/2700) ([misl6](https://github.com/misl6))
+- WRITE\_EXTERNAL\_STORAGE maxSdk [\#2694](https://github.com/kivy/python-for-android/pull/2694) ([RobertFlatt](https://github.com/RobertFlatt))
+- Fixes an issue regarding blacklist and bytecode compile + some cleanup [\#2693](https://github.com/kivy/python-for-android/pull/2693) ([misl6](https://github.com/misl6))
+- Bump to a version of `SDL` with patches for the TextInput / TextEditing \(SDL `2.26.0`\) [\#2692](https://github.com/kivy/python-for-android/pull/2692) ([misl6](https://github.com/misl6))
+- Make CI compile aiohttp again. [\#2690](https://github.com/kivy/python-for-android/pull/2690) ([xavierfiechter](https://github.com/xavierfiechter))
+- Add resources [\#2684](https://github.com/kivy/python-for-android/pull/2684) ([RobertFlatt](https://github.com/RobertFlatt))
+- Update `MIN_TARGET_API` to `30` and `RECOMMENDED_TARGET_API` to `33` [\#2683](https://github.com/kivy/python-for-android/pull/2683) ([misl6](https://github.com/misl6))
+- recipe.download\_file: implement shallow git cloning [\#2682](https://github.com/kivy/python-for-android/pull/2682) ([SomberNight](https://github.com/SomberNight))
+- requirements: relax version bound on "pep517" [\#2680](https://github.com/kivy/python-for-android/pull/2680) ([SomberNight](https://github.com/SomberNight))
+- Add new Android permissions [\#2677](https://github.com/kivy/python-for-android/pull/2677) ([RobertFlatt](https://github.com/RobertFlatt))
+- Resize webview when keyboard is shown [\#2674](https://github.com/kivy/python-for-android/pull/2674) ([dbnicholson](https://github.com/dbnicholson))
+- Update `SDL2`, `SDL2_ttf`, `SDL2_mixer`, `SDL2_image` to latest releases [\#2673](https://github.com/kivy/python-for-android/pull/2673) ([misl6](https://github.com/misl6))
+- Fixes libvpx build [\#2672](https://github.com/kivy/python-for-android/pull/2672) ([misl6](https://github.com/misl6))
+- `toml` may not be available on systemwide python [\#2670](https://github.com/kivy/python-for-android/pull/2670) ([misl6](https://github.com/misl6))
+- android/activity: Add Application.ActivityLifecycleCallbacks helpers [\#2669](https://github.com/kivy/python-for-android/pull/2669) ([dbnicholson](https://github.com/dbnicholson))
+- Bump minimal and recommended Android NDK version to 25b [\#2668](https://github.com/kivy/python-for-android/pull/2668) ([misl6](https://github.com/misl6))
+- Include HOME in build environment [\#2582](https://github.com/kivy/python-for-android/pull/2582) ([dbnicholson](https://github.com/dbnicholson))
+
 ## [v2022.09.04](https://github.com/kivy/python-for-android/tree/v2022.09.04) (2022-09-04)
 
 [Full Changelog](https://github.com/kivy/python-for-android/compare/v2022.07.20...v2022.09.04)

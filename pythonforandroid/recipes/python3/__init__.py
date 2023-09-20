@@ -56,7 +56,7 @@ class Python3Recipe(TargetPythonRecipe):
         :class:`~pythonforandroid.python.GuestPythonRecipe`
     '''
 
-    version = '3.9.9'
+    version = '3.10.10'
     url = 'https://www.python.org/ftp/python/{version}/Python-{version}.tgz'
     name = 'python3'
 
@@ -70,14 +70,16 @@ class Python3Recipe(TargetPythonRecipe):
 
         # Python 3.8.1 & 3.9.X
         ('patches/py3.8.1.patch', version_starts_with("3.8")),
-        ('patches/py3.8.1.patch', version_starts_with("3.9"))
+        ('patches/py3.8.1.patch', version_starts_with("3.9")),
+        ('patches/py3.8.1.patch', version_starts_with("3.10"))
     ]
 
     if shutil.which('lld') is not None:
         patches = patches + [
             ("patches/py3.7.1_fix_cortex_a8.patch", version_starts_with("3.7")),
             ("patches/py3.8.1_fix_cortex_a8.patch", version_starts_with("3.8")),
-            ("patches/py3.8.1_fix_cortex_a8.patch", version_starts_with("3.9"))
+            ("patches/py3.8.1_fix_cortex_a8.patch", version_starts_with("3.9")),
+            ("patches/py3.8.1_fix_cortex_a8.patch", version_starts_with("3.10"))
         ]
 
     depends = ['hostpython3', 'sqlite3', 'openssl', 'libffi']
@@ -96,6 +98,7 @@ class Python3Recipe(TargetPythonRecipe):
         'ac_cv_file__dev_ptc=no',
         '--without-ensurepip',
         'ac_cv_little_endian_double=yes',
+        'ac_cv_header_sys_eventfd_h=no',
         '--prefix={prefix}',
         '--exec-prefix={exec_prefix}',
         '--enable-loadable-sqlite-extensions')
@@ -364,11 +367,11 @@ class Python3Recipe(TargetPythonRecipe):
                 self.major_minor_version_string
             ))
 
-        # Compile to *.pyc/*.pyo the python modules
+        # Compile to *.pyc the python modules
         self.compile_python_files(modules_build_dir)
-        # Compile to *.pyc/*.pyo the standard python library
+        # Compile to *.pyc the standard python library
         self.compile_python_files(join(self.get_build_dir(arch.arch), 'Lib'))
-        # Compile to *.pyc/*.pyo the other python packages (site-packages)
+        # Compile to *.pyc the other python packages (site-packages)
         self.compile_python_files(self.ctx.get_python_install_dir(arch.arch))
 
         # Bundle compiled python modules to a folder

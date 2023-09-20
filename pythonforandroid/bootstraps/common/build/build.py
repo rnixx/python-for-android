@@ -21,6 +21,8 @@ from distutils.version import LooseVersion
 from fnmatch import fnmatch
 import jinja2
 
+from pythonforandroid.util import rmdir, ensure_dir
+
 
 def get_dist_info_for(key, error_if_missing=True):
     try:
@@ -40,10 +42,6 @@ def get_hostpython():
     return get_dist_info_for('hostpython')
 
 
-def get_python_version():
-    return get_dist_info_for('python_version')
-
-
 def get_bootstrap_name():
     return get_dist_info_for('bootstrap')
 
@@ -57,11 +55,6 @@ else:
 
 curdir = dirname(__file__)
 
-PYTHON = get_hostpython()
-PYTHON_VERSION = get_python_version()
-if PYTHON is not None and not exists(PYTHON):
-    PYTHON = None
-
 BLACKLIST_PATTERNS = [
     # code versionning
     '^*.hg/*',
@@ -73,17 +66,26 @@ BLACKLIST_PATTERNS = [
     '~',
     '*.bak',
     '*.swp',
+
+    # Android artifacts
+    '*.apk',
+    '*.aab',
 ]
-# pyc/py
-if PYTHON is not None:
-    BLACKLIST_PATTERNS.append('*.py')
 
 WHITELIST_PATTERNS = []
-if get_bootstrap_name() in ('sdl2', 'webview', 'service_only'):
+
+if os.environ.get("P4A_BUILD_IS_RUNNING_UNITTESTS", "0") != "1":
+    PYTHON = get_hostpython()
+    _bootstrap_name = get_bootstrap_name()
+else:
+    PYTHON = "python3"
+    _bootstrap_name = "sdl2"
+
+if PYTHON is not None and not exists(PYTHON):
+    PYTHON = None
+
+if _bootstrap_name in ('sdl2', 'webview', 'service_only'):
     WHITELIST_PATTERNS.append('pyconfig.h')
-
-python_files = []
-
 
 environment = jinja2.Environment(loader=jinja2.FileSystemLoader(
     join(curdir, 'templates')))
@@ -91,11 +93,6 @@ environment = jinja2.Environment(loader=jinja2.FileSystemLoader(
 
 DEFAULT_PYTHON_ACTIVITY_JAVA_CLASS = 'org.kivy.android.PythonActivity'
 DEFAULT_PYTHON_SERVICE_JAVA_CLASS = 'org.kivy.android.PythonService'
-
-
-def ensure_dir(path):
-    if not exists(path):
-        makedirs(path)
 
 
 def render(template, dest, **kwargs):
@@ -150,22 +147,10 @@ def listfiles(d):
             yield fn
 
 
-def make_tar(tfn, source_dirs, ignore_path=[], optimize_python=True):
+def make_tar(tfn, source_dirs, byte_compile_python=False, optimize_python=True):
     '''
     Make a zip file `fn` from the contents of source_dis.
     '''
-
-    # selector function
-    def select(fn):
-        rfn = realpath(fn)
-        for p in ignore_path:
-            if p.endswith('/'):
-                p = p[:-1]
-            if rfn.startswith(p):
-                return False
-        if rfn in python_files:
-            return False
-        return not is_blacklist(fn)
 
     def clean(tinfo):
         """cleaning function (for reproducible builds)"""
@@ -178,9 +163,12 @@ def make_tar(tfn, source_dirs, ignore_path=[], optimize_python=True):
     files = []
     for sd in source_dirs:
         sd = realpath(sd)
-        compile_dir(sd, optimize_python=optimize_python)
-        files += [(x, relpath(realpath(x), sd)) for x in listfiles(sd)
-                  if select(x)]
+        for fn in listfiles(sd):
+            if is_blacklist(fn):
+                continue
+            if fn.endswith('.py') and byte_compile_python:
+                fn = compile_py_file(fn, optimize_python=optimize_python)
+            files.append((fn, relpath(realpath(fn), sd)))
     files.sort()  # deterministic
 
     # create tar.gz of thoses files
@@ -210,18 +198,15 @@ def make_tar(tfn, source_dirs, ignore_path=[], optimize_python=True):
     gf.close()
 
 
-def compile_dir(dfn, optimize_python=True):
+def compile_py_file(python_file, optimize_python=True):
     '''
-    Compile *.py in directory `dfn` to *.pyo
+    Compile python_file to *.pyc and return the filename of the *.pyc file.
     '''
 
     if PYTHON is None:
         return
 
-    if int(PYTHON_VERSION[0]) >= 3:
-        args = [PYTHON, '-m', 'compileall', '-b', '-f', dfn]
-    else:
-        args = [PYTHON, '-m', 'compileall', '-f', dfn]
+    args = [PYTHON, '-m', 'compileall', '-b', '-f', python_file]
     if optimize_python:
         # -OO = strip docstrings
         args.insert(1, '-OO')
@@ -233,16 +218,18 @@ def compile_dir(dfn, optimize_python=True):
               'error, see logs above')
         exit(1)
 
+    return ".".join([os.path.splitext(python_file)[0], "pyc"])
+
 
 def make_package(args):
-    # If no launcher is specified, require a main.py/main.pyo:
+    # If no launcher is specified, require a main.py/main.pyc:
     if (get_bootstrap_name() != "sdl" or args.launcher is None) and \
             get_bootstrap_name() not in ["webview", "service_library"]:
         # (webview doesn't need an entrypoint, apparently)
         if args.private is None or (
                 not exists(join(realpath(args.private), 'main.py')) and
-                not exists(join(realpath(args.private), 'main.pyo'))):
-            print('''BUILD FAILURE: No main.py(o) found in your app directory. This
+                not exists(join(realpath(args.private), 'main.pyc'))):
+            print('''BUILD FAILURE: No main.py(c) found in your app directory. This
 file must exist to act as the entry point for you app. If your app is
 started by a file with a different name, rename it to main.py or add a
 main.py that loads it.''')
@@ -251,7 +238,7 @@ main.py that loads it.''')
     assets_dir = "src/main/assets"
 
     # Delete the old assets.
-    shutil.rmtree(assets_dir, ignore_errors=True)
+    rmdir(assets_dir, ignore_errors=True)
     ensure_dir(assets_dir)
 
     # Add extra environment variable file into tar-able directory:
@@ -259,8 +246,8 @@ main.py that loads it.''')
     with open(os.path.join(env_vars_tarpath, "p4a_env_vars.txt"), "w") as f:
         if hasattr(args, "window"):
             f.write("P4A_IS_WINDOWED=" + str(args.window) + "\n")
-        if hasattr(args, "orientation"):
-            f.write("P4A_ORIENTATION=" + str(args.orientation) + "\n")
+        if hasattr(args, "sdl_orientation_hint"):
+            f.write("KIVY_ORIENTATION=" + str(args.sdl_orientation_hint) + "\n")
         f.write("P4A_NUMERIC_VERSION=" + str(args.numeric_version) + "\n")
         f.write("P4A_MINSDK=" + str(args.min_sdk_version) + "\n")
 
@@ -290,7 +277,6 @@ main.py that loads it.''')
                     variants = [
                         copy_path,
                         copy_path.partition(".")[0] + ".pyc",
-                        copy_path.partition(".")[0] + ".pyo",
                     ]
                     # Check in all variants with all possible endings:
                     for variant in variants:
@@ -301,7 +287,7 @@ main.py that loads it.''')
                                     not exists(
                                         join(main_py_only_dir, dir_path)
                                     )):
-                                os.mkdir(join(main_py_only_dir, dir_path))
+                                ensure_dir(join(main_py_only_dir, dir_path))
                             # Copy actual file:
                             shutil.copyfile(
                                 join(args.private, variant),
@@ -326,20 +312,44 @@ main.py that loads it.''')
             for arch in get_dist_info_for("archs"):
                 libs_dir = f"libs/{arch}"
                 make_tar(
-                    join(libs_dir, 'libpybundle.so'), [f'_python_bundle__{arch}'], args.ignore_path,
-                    optimize_python=args.optimize_python)
+                    join(libs_dir, "libpybundle.so"),
+                    [f"_python_bundle__{arch}"],
+                    byte_compile_python=args.byte_compile_python,
+                    optimize_python=args.optimize_python,
+                )
             make_tar(
-                join(assets_dir, 'private.tar'), private_tar_dirs, args.ignore_path,
-                optimize_python=args.optimize_python)
+                join(assets_dir, "private.tar"),
+                private_tar_dirs,
+                byte_compile_python=args.byte_compile_python,
+                optimize_python=args.optimize_python,
+            )
     finally:
         for directory in _temp_dirs_to_clean:
-            shutil.rmtree(directory)
+            rmdir(directory)
 
     # Remove extra env vars tar-able directory:
-    shutil.rmtree(env_vars_tarpath)
+    rmdir(env_vars_tarpath)
 
     # Prepare some variables for templating process
     res_dir = "src/main/res"
+    res_dir_initial = "src/res_initial"
+    # make res_dir stateless
+    if exists(res_dir_initial):
+        rmdir(res_dir, ignore_errors=True)
+        shutil.copytree(res_dir_initial, res_dir)
+    else:
+        shutil.copytree(res_dir, res_dir_initial)
+
+    # Add user resouces
+    for resource in args.resources:
+        resource_src, resource_dest = resource.split(":")
+        if isfile(realpath(resource_src)):
+            ensure_dir(dirname(join(res_dir, resource_dest)))
+            shutil.copy(realpath(resource_src), join(res_dir, resource_dest))
+        else:
+            shutil.copytree(realpath(resource_src),
+                            join(res_dir, resource_dest), dirs_exist_ok=True)
+
     default_icon = 'templates/kivy-icon.png'
     default_presplash = 'templates/kivy-presplash.jpg'
     shutil.copy(
@@ -485,14 +495,16 @@ main.py that loads it.''')
     with open('project.properties', 'r') as fileh:
         target = fileh.read().strip()
     android_api = target.split('-')[1]
-    try:
-        int(android_api)
-    except (ValueError, TypeError):
+
+    if android_api.isdigit():
+        android_api = int(android_api)
+    else:
         raise ValueError(
             "failed to extract the Android API level from " +
             "build.properties. expected int, got: '" +
             str(android_api) + "'"
         )
+
     with open('local.properties', 'r') as fileh:
         sdk_dir = fileh.read().strip()
     sdk_dir = sdk_dir[8:]
@@ -639,20 +651,92 @@ main.py that loads it.''')
                 subprocess.check_output(patch_command)
 
 
-def parse_args_and_make_package(args=None):
-    global BLACKLIST_PATTERNS, WHITELIST_PATTERNS, PYTHON
+def parse_permissions(args_permissions):
+    if args_permissions and isinstance(args_permissions[0], list):
+        args_permissions = [p for perm in args_permissions for p in perm]
 
+    def _is_advanced_permission(permission):
+        return permission.startswith("(") and permission.endswith(")")
+
+    def _decode_advanced_permission(permission):
+        SUPPORTED_PERMISSION_PROPERTIES = ["name", "maxSdkVersion", "usesPermissionFlags"]
+        _permission_args = permission[1:-1].split(";")
+        _permission_args = (arg.split("=") for arg in _permission_args)
+        advanced_permission = dict(_permission_args)
+
+        if "name" not in advanced_permission:
+            raise ValueError("Advanced permission must have a name property")
+
+        for key in advanced_permission.keys():
+            if key not in SUPPORTED_PERMISSION_PROPERTIES:
+                raise ValueError(
+                    f"Property '{key}' is not supported. "
+                    "Advanced permission only supports: "
+                    f"{', '.join(SUPPORTED_PERMISSION_PROPERTIES)} properties"
+                )
+
+        return advanced_permission
+
+    _permissions = []
+    for permission in args_permissions:
+        if _is_advanced_permission(permission):
+            _permissions.append(_decode_advanced_permission(permission))
+        else:
+            if "." in permission:
+                _permissions.append(dict(name=permission))
+            else:
+                _permissions.append(dict(name=f"android.permission.{permission}"))
+    return _permissions
+
+
+def get_sdl_orientation_hint(orientations):
+    SDL_ORIENTATION_MAP = {
+        "landscape": "LandscapeLeft",
+        "portrait": "Portrait",
+        "portrait-reverse": "PortraitUpsideDown",
+        "landscape-reverse": "LandscapeRight",
+    }
+    return " ".join(
+        [SDL_ORIENTATION_MAP[x] for x in orientations if x in SDL_ORIENTATION_MAP]
+    )
+
+
+def get_manifest_orientation(orientations, manifest_orientation=None):
+    # If the user has specifically set an orientation to use in the manifest,
+    # use that.
+    if manifest_orientation is not None:
+        return manifest_orientation
+
+    # If multiple or no orientations are specified, use unspecified in the manifest,
+    # as we can only specify one orientation in the manifest.
+    if len(orientations) != 1:
+        return "unspecified"
+
+    # Convert the orientation to a value that can be used in the manifest.
+    # If the specified orientation is not supported, use unspecified.
+    MANIFEST_ORIENTATION_MAP = {
+        "landscape": "landscape",
+        "portrait": "portrait",
+        "portrait-reverse": "reversePortrait",
+        "landscape-reverse": "reverseLandscape",
+    }
+    return MANIFEST_ORIENTATION_MAP.get(orientations[0], "unspecified")
+
+
+def get_dist_ndk_min_api_level():
     # Get the default minsdk, equal to the NDK API that this dist is built against
     try:
         with open('dist_info.json', 'r') as fileh:
             info = json.load(fileh)
-            default_min_api = int(info['ndk_api'])
-            ndk_api = default_min_api
+            ndk_api = int(info['ndk_api'])
     except (OSError, KeyError, ValueError, TypeError):
         print('WARNING: Failed to read ndk_api from dist info, defaulting to 12')
-        default_min_api = 12  # The old default before ndk_api was introduced
-        ndk_api = 12
+        ndk_api = 12  # The old default before ndk_api was introduced
+    return ndk_api
 
+
+def create_argument_parser():
+    ndk_api = get_dist_ndk_min_api_level()
     import argparse
     ap = argparse.ArgumentParser(description='''\
 Package a Python application for Android (using
@@ -688,6 +772,8 @@ tools directory of the Android SDK.
         ap.add_argument('--launcher', dest='launcher', action='store_true',
                         help=('Provide this argument to build a multi-app '
                               'launcher, rather than a single app.'))
+        ap.add_argument('--home-app', dest='home_app', action='store_true', default=False,
+                        help=('Turn your application into a home app (launcher)'))
     ap.add_argument('--permission', dest='permissions', action='append', default=[],
                     help='The permissions to give this app.', nargs='+')
     ap.add_argument('--meta-data', dest='meta_data', action='append', default=[],
@@ -698,6 +784,10 @@ tools directory of the Android SDK.
                     action="append", default=[],
                     metavar="/path/to/source:dest",
                     help='Put this in the assets folder at assets/dest')
+    ap.add_argument('--resource', dest='resources',
+                    action="append", default=[],
+                    metavar="/path/to/source:kind/asset",
+                    help='Put this in the res folder at res/kind')
     ap.add_argument('--icon', dest='icon',
                     help=('A png file to use as the icon for '
                           'the application.'))
@@ -731,19 +821,21 @@ tools directory of the Android SDK.
         ap.add_argument('--window', dest='window', action='store_true',
                         default=False,
                         help='Indicate if the application will be windowed')
+        ap.add_argument('--manifest-orientation', dest='manifest_orientation',
+                        help=('The orientation that will be set in the '
+                              'android:screenOrientation attribute of the activity '
+                              'in the AndroidManifest.xml file. If not set, '
+                              'the value will be synthesized from the --orientation option.'))
         ap.add_argument('--orientation', dest='orientation',
-                        default='portrait',
-                        help=('The orientation that the game will '
-                              'display in. '
-                              'Usually one of "landscape", "portrait", '
-                              '"sensor", or "user" (the same as "sensor" '
-                              'but obeying the '
-                              'user\'s Android rotation setting). '
-                              'The full list of options is given under '
-                              'android_screenOrientation at '
-                              'https://developer.android.com/guide/'
-                              'topics/manifest/'
-                              'activity-element.html'))
+                        action="append", default=[],
+                        choices=['portrait', 'landscape', 'landscape-reverse', 'portrait-reverse'],
+                        help=('The orientations that the app will display in. '
+                              'Since Android ignores android:screenOrientation '
+                              'when in multi-window mode (Which is the default on Android 12+), '
+                              'this option will also set the window orientation hints '
+                              'for apps using the (default) SDL bootstrap.'
+                              'If multiple orientations are given, android:screenOrientation '
+                              'will be set to "unspecified"'))
 
     ap.add_argument('--enable-androidx', dest='enable_androidx',
                     action='store_true',
@@ -798,9 +890,9 @@ tools directory of the Android SDK.
     ap.add_argument('--sdk', dest='sdk_version', default=-1,
                     type=int, help=('Deprecated argument, does nothing'))
     ap.add_argument('--minsdk', dest='min_sdk_version',
-                    default=default_min_api, type=int,
+                    default=ndk_api, type=int,
                     help=('Minimum Android SDK version that the app supports. '
-                          'Defaults to {}.'.format(default_min_api)))
+                          'Defaults to {}.'.format(ndk_api)))
     ap.add_argument('--allow-minsdk-ndkapi-mismatch', default=False,
                     action='store_true',
                     help=('Allow the --minsdk argument to be different from '
@@ -824,8 +916,6 @@ tools directory of the Android SDK.
     ap.add_argument('--try-system-python-compile', dest='try_system_python_compile',
                     action='store_true',
                     help='Use the system python during compileall if possible.')
-    ap.add_argument('--no-compile-pyo', dest='no_compile_pyo', action='store_true',
-                    help='Do not optimise .py files to .pyo.')
     ap.add_argument('--sign', action='store_true',
                     help=('Try to sign the APK with your credentials. You must set '
                           'the appropriate environment variables.'))
@@ -844,9 +934,12 @@ tools directory of the Android SDK.
                           'files (containing your main.py entrypoint). '
                           'See https://developer.android.com/guide/topics/data/'
                           'autobackup#IncludingFiles for more information'))
+    ap.add_argument('--no-byte-compile-python', dest='byte_compile_python',
+                    action='store_false', default=True,
+                    help='Skip byte compile for .py files.')
     ap.add_argument('--no-optimize-python', dest='optimize_python',
                     action='store_false', default=True,
-                    help=('Whether to compile to optimised .pyo files, using -OO '
+                    help=('Whether to compile to optimised .pyc files, using -OO '
                           '(strips docstrings and asserts)'))
     ap.add_argument('--extra-manifest-xml', default='',
                     help=('Extra xml to write directly inside the <manifest> element of'
@@ -861,6 +954,15 @@ tools directory of the Android SDK.
                     help='Use that parameter if you need to implement your own PythonServive Java class')
     ap.add_argument('--activity-class-name', dest='activity_class_name', default=DEFAULT_PYTHON_ACTIVITY_JAVA_CLASS,
                     help='The full java class name of the main activity')
+
+    return ap
+
+
+def parse_args_and_make_package(args=None):
+    global BLACKLIST_PATTERNS, WHITELIST_PATTERNS, PYTHON
+
+    ndk_api = get_dist_ndk_min_api_level()
+    ap = create_argument_parser()
 
     # Put together arguments, and add those from .p4a config file:
     if args is None:
@@ -880,8 +982,6 @@ tools directory of the Android SDK.
     _read_configuration()
 
     args = ap.parse_args(args)
-
-    args.ignore_path = []
 
     if args.name and args.name[0] == '"' and args.name[-1] == '"':
         args.name = args.name[1:-1]
@@ -903,13 +1003,19 @@ tools directory of the Android SDK.
         print('Billing not yet supported!')
         sys.exit(1)
 
-    if args.sdk_version == -1:
+    if args.sdk_version != -1:
         print('WARNING: Received a --sdk argument, but this argument is '
               'deprecated and does nothing.')
         args.sdk_version = -1  # ensure it is not used
 
-    if args.permissions and isinstance(args.permissions[0], list):
-        args.permissions = [p for perm in args.permissions for p in perm]
+    args.permissions = parse_permissions(args.permissions)
+
+    args.manifest_orientation = get_manifest_orientation(
+        args.orientation, args.manifest_orientation
+    )
+
+    if get_bootstrap_name() == "sdl2":
+        args.sdl_orientation_hint = get_sdl_orientation_hint(args.orientation)
 
     if args.res_xmls and isinstance(args.res_xmls[0], list):
         args.res_xmls = [x for res in args.res_xmls for x in res]
@@ -924,10 +1030,6 @@ tools directory of the Android SDK.
             pass
         else:
             PYTHON = python_executable
-
-    if args.no_compile_pyo:
-        PYTHON = None
-        BLACKLIST_PATTERNS.remove('*.py')
 
     if args.blacklist:
         with open(args.blacklist) as fd:
@@ -953,4 +1055,6 @@ tools directory of the Android SDK.
 
 
 if __name__ == "__main__":
+    if get_bootstrap_name() in ('sdl2', 'webview', 'service_only'):
+        WHITELIST_PATTERNS.append('pyconfig.h')
     parse_args_and_make_package()

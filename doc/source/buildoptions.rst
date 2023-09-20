@@ -8,8 +8,8 @@ This page contains instructions for using different build options.
 Python versions
 ---------------
 
-python-for-android supports using Python 3.7 or higher. To explicitly select a Python
-version in your requirements, use e.g. ``--requirements=python3==3.7.1,hostpython3==3.7.1``.
+python-for-android supports using Python 3.8 or higher. To explicitly select a Python
+version in your requirements, use e.g. ``--requirements=python3==3.10.11,hostpython3==3.10.11``.
 
 The last python-for-android version supporting Python2 was `v2019.10.06 <https://github.com/kivy/python-for-android/archive/v2019.10.06.zip>`__
 
@@ -57,16 +57,37 @@ options (this list may not be exhaustive):
 - ``--package``: The Java package name for your project. e.g. ``org.example.yourapp``.
 - ``--name``: The app name.
 - ``--version``: The version number.
-- ``--orientation``: Usually one of ``portait``, ``landscape``,
-  ``sensor`` to automatically rotate according to the device
-  orientation, or ``user`` to do the same but obeying the user's
-  settings. The full list of valid options is given under
-  ``android:screenOrientation`` in the `Android documentation
-  <https://developer.android.com/guide/topics/manifest/activity-element.html>`__.
+- ``--orientation``: The orientations that the app will display in.
+  (Available options are ``portrait``, ``landscape``, ``portrait-reverse``, ``landscape-reverse``).
+  Since Android ignores ``android:screenOrientation`` when in multi-window mode
+  (Which is the default on Android 12+), this option will also set the window orientation hints
+  for the SDL bootstrap. If multiple orientations are given,
+``android:screenOrientation`` will be set to ``unspecified``.
+- ``--manifest-orientation``: The orientation that will be set for the ``android:screenOrientation``
+  attribute of the activity in the ``AndroidManifest.xml`` file. If not set, the value 
+  will be synthesized from the ``--orientation`` option.
+  The full list of valid options is given under ``android:screenOrientation``
+  in the `Android documentation <https://developer.android.com/guide/topics/manifest/activity-element.html>`__.
 - ``--icon``: A path to the png file to use as the application icon.
-- ``--permission``: A permission name for the app,
-  e.g. ``--permission VIBRATE``. For multiple permissions, add
-  multiple ``--permission`` arguments.
+- ``--permission``: A permission that needs to be declared into the App ``AndroidManifest.xml``.
+  For multiple permissions, add multiple ``--permission`` arguments.
+  ``--home-app`` Gives you the option to set your application as a home app (launcher) on your Android device.
+
+  .. Note ::
+    ``--permission`` accepts the following syntaxes: 
+    ``--permission (name=android.permission.WRITE_EXTERNAL_STORAGE;maxSdkVersion=18)``
+    or ``--permission android.permission.WRITE_EXTERNAL_STORAGE``.
+
+    The first syntax is used to set additional properties to the permission 
+    (``android:maxSdkVersion`` and ``android:usesPermissionFlags`` are the only ones supported for now).
+
+    The second one can be used when there's no need to add any additional properties.
+
+  .. Warning ::
+    The syntax ``--permission VIBRATE`` (only the permission name, without the prefix),
+    is also supported for backward compatibility, but it will be removed in the future.
+
+
 - ``--meta-data``: Custom key=value pairs to add in the application metadata.
 - ``--presplash``: A path to the image file to use as a screen while
   the application is loading.
@@ -89,8 +110,9 @@ options (this list may not be exhaustive):
 - ``--service``: A service name and the Python script it should
   run. See :ref:`arbitrary_scripts_services`.
 - ``--add-source``: Add a source directory to the app's Java code.
-- ``--no-compile-pyo``: Do not optimise .py files to .pyo.
+- ``--no-byte-compile-python``: Skip byte compile for .py files.
 - ``--enable-androidx``: Enable AndroidX support library.
+- ``--add-resource``: Put this file or directory in the apk res directory.
 
 
 webview
@@ -120,12 +142,16 @@ ready.
 - ``--package``: The Java package name for your project. e.g. ``org.example.yourapp``.
 - ``--name``: The app name.
 - ``--version``: The version number.
-- ``--orientation``: Usually one of ``portait``, ``landscape``,
-  ``sensor`` to automatically rotate according to the device
-  orientation, or ``user`` to do the same but obeying the user's
-  settings. The full list of valid options is given under
-  ``android:screenOrientation`` in the `Android documentation
-  <https://developer.android.com/guide/topics/manifest/activity-element.html>`__.
+- ``--orientation``: The orientations that the app will display in.
+  (Available options are ``portrait``, ``landscape``, ``portrait-reverse``, ``landscape-reverse``).
+  Since Android ignores ``android:screenOrientation`` when in multi-window mode
+  (Which is the default on Android 12+), this setting is not guaranteed to work, and
+  you should consider to implement a custom orientation change handler in your app.
+- ``--manifest-orientation``: The orientation that will be set in the ``android:screenOrientation``
+  attribute of the activity in the ``AndroidManifest.xml`` file. If not set, the value 
+  will be synthesized from the ``--orientation`` option.
+  The full list of valid options is given under ``android:screenOrientation``
+  in the `Android documentation <https://developer.android.com/guide/topics/manifest/activity-element.html>`__.
 - ``--icon``: A path to the png file to use as the application icon.
 - ``--permission``: A permission name for the app,
   e.g. ``--permission VIBRATE``. For multiple permissions, add

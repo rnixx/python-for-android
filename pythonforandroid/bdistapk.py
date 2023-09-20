@@ -1,10 +1,10 @@
-from setuptools import Command
-
-import sys
-from os.path import realpath, join, exists, dirname, curdir, basename, split
-from os import makedirs
 from glob import glob
-from shutil import rmtree, copyfile
+from os.path import realpath, join, dirname, curdir, basename, split
+from setuptools import Command
+from shutil import copyfile
+import sys
+
+from pythonforandroid.util import rmdir, ensure_dir
 
 
 def argv_contains(t):
@@ -43,6 +43,9 @@ class Bdist(Command):
                 if option == 'permissions':
                     for perm in value:
                         sys.argv.append('--permission={}'.format(perm))
+                elif option == 'orientation':
+                    for orient in value:
+                        sys.argv.append('--orientation={}'.format(orient))
                 elif value in (None, 'None'):
                     sys.argv.append('--{}'.format(option))
                 else:
@@ -87,9 +90,8 @@ class Bdist(Command):
                   'that.')
 
         bdist_dir = 'build/bdist.android-{}'.format(self.arch)
-        if exists(bdist_dir):
-            rmtree(bdist_dir)
-        makedirs(bdist_dir)
+        rmdir(bdist_dir)
+        ensure_dir(bdist_dir)
 
         globs = []
         for directory, patterns in self.distribution.package_data.items():
@@ -104,11 +106,10 @@ class Bdist(Command):
         if not argv_contains('--launcher'):
             for filen in filens:
                 new_dir = join(bdist_dir, dirname(filen))
-                if not exists(new_dir):
-                    makedirs(new_dir)
+                ensure_dir(new_dir)
                 print('Including {}'.format(filen))
                 copyfile(filen, join(bdist_dir, filen))
-                if basename(filen) in ('main.py', 'main.pyo'):
+                if basename(filen) in ('main.py', 'main.pyc'):
                     main_py_dirs.append(filen)
 
         # This feels ridiculous, but how else to define the main.py dir?
